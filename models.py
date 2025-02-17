@@ -35,3 +35,21 @@ class MakeModel(db.Model):
 
     make: Mapped[Make] = relationship()
     model: Mapped[Model] = relationship()
+
+# Manual Class for Vin Decode Procedure Result
+@dataclass
+class VinResult:
+    attributeId: str = ""
+    code: str = ""
+    createdOn: datetime = None
+    dataType: str = ""
+    decode: str = ""
+    elementId: int = None
+    groupName: str = ""
+    keys: str = ""
+    patternId: int = None
+    source: str = ""
+    value: str = ""
+    variable: str = ""
+    vinSchemaId: int = None
+    wmiId: int = None
