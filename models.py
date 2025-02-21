@@ -36,6 +36,14 @@ class MakeModel(db.Model):
     make: Mapped[Make] = relationship()
     model: Mapped[Model] = relationship()
 
+@dataclass
+class Suggestions(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str]
+    phoneNumber: Mapped[str]
+    email: Mapped[str]
+    suggestion: Mapped[str]
+
 # Manual Class for Vin Decode Procedure Result
 @dataclass
 class VinResult:
