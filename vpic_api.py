@@ -125,9 +125,6 @@ def mapDecodeProcedureResults(data: dict[Any, Any]):
 def mapSuggestionToModel(data: dict[Any, Any]) -> Suggestions:
     model = Suggestions()
 
-    if data["id"]:
-        model.id = data["id"]
-
     model.name = data["name"]
     model.phoneNumber = data["phoneNumber"]
     model.email = data["email"]
