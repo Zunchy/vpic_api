@@ -13,6 +13,8 @@ db = SQLAlchemy(model_class=Base)
 
 @dataclass
 class Make(db.Model):
+    __bind_key__ = 'vpic'
+
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     createdOn: Mapped[datetime]
@@ -20,6 +22,8 @@ class Make(db.Model):
 
 @dataclass
 class Model(db.Model):
+    __bind_key__ = 'vpic'
+    
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     createdOn: Mapped[datetime]
@@ -27,6 +31,8 @@ class Model(db.Model):
 
 @dataclass
 class MakeModel(db.Model):
+    __bind_key__ = 'vpic'
+    
     id: Mapped[int] = mapped_column(primary_key=True)
     makeId: Mapped[int] = mapped_column(ForeignKey("make.id"))
     modelId: Mapped[datetime] = mapped_column(ForeignKey("model.id"))
@@ -38,6 +44,8 @@ class MakeModel(db.Model):
 
 @dataclass
 class Suggestions(db.Model):
+    __bind_key__ = 'vpic'
+    
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str]
     phoneNumber: Mapped[str]
@@ -47,6 +55,8 @@ class Suggestions(db.Model):
 # Manual Class for Vin Decode Procedure Result
 @dataclass
 class VinResult:
+    __bind_key__ = 'vpic'
+    
     attributeId: str = ""
     code: str = ""
     createdOn: datetime = None
@@ -61,3 +71,18 @@ class VinResult:
     variable: str = ""
     vinSchemaId: int = None
     wmiId: int = None
+
+# Start webhook_monitoring models
+@dataclass
+class MasterWebhookServer(db.Model):
+    __bind_key__ = 'webhook_monitoring'
+    __tablename__ = 'master_webhook_server'
+
+    webhook_server_url: Mapped[str] = mapped_column(primary_key=True)
+
+@dataclass
+class Producer(db.Model):
+    __bind_key__ = 'webhook_monitoring'
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    url: Mapped[str]

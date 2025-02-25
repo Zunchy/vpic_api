@@ -1,17 +1,36 @@
 import logging
+import os
+import requests
 from typing import Any
 from flask import Flask, make_response, request, url_for, jsonify
-from sqlalchemy import text
-from models import Suggestions, db, Make, Model, MakeModel, VinResult
+from sqlalchemy import select, text
+from models import MasterWebhookServer, Producer, Suggestions, db, Make, Model, MakeModel, VinResult
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 logging.basicConfig(filename='log_file.log')
 
-# connect to database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mssql+pyodbc://@' + '.' + '/' + 'vPICList_Lite1' + '?trusted_connection=yes&trustservercertificate=yes&driver=ODBC+Driver+18+for+SQL+Server'
+app.config['SQLALCHEMY_BINDS'] = {
+    'vpic': 'mssql+pyodbc://@' + '.' + '/' + 'vPICList_Lite1' + '?trusted_connection=yes&trustservercertificate=yes&driver=ODBC+Driver+18+for+SQL+Server',
+    'webhook_monitoring': 'postgresql+psycopg2://postgres:123@localhost/webhook_monitoring'
+}
 db.init_app(app)
+
+PRODUCER_ID = None
+
+with app.app_context():
+    base_url = os.getenv("VPIC_API_BASE_URL")
+
+    master_server: MasterWebhookServer = MasterWebhookServer.query.first()
+
+    # Register with webhook_monitoring
+    if base_url is not None:
+        register_response = requests.post(master_server.webhook_server_url.replace('webhook', 'producer'), json={'url': base_url})
+        PRODUCER_ID = register_response.json()['id']
+    else:
+        app.logger.warning("Unable to retrieve base url from environment variables. Failed to register for webhook monitoring.")
 
 @app.route("/api/discover", methods=['GET'])
 def discover_endpoints():
